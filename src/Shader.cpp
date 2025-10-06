@@ -15,8 +15,8 @@ static std::string ReadFile(const std::string &filepath) {
 
 
 Shader::Shader(const std::string& filepath): m_FilePath(filepath), m_RendererID(0){
-    std::string vertex_shader = ReadFile("res/shaders/vertex.shader");
-    std::string fragment_shader = ReadFile("res/shaders/fragment.shader");
+    std::string vertex_shader = ReadFile("res/shaders/vertex.glsl");
+    std::string fragment_shader = ReadFile("res/shaders/fragment.glsl");
 
     m_RendererID = CreateShader(vertex_shader, fragment_shader);
 }
