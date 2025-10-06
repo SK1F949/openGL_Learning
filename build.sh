@@ -1,2 +1,6 @@
 #!/bin/bash
-g++ -o program src/*.cpp -lglfw -lGLEW -lGL -lGLU && ./program
+g++ -o tmp/program src/*.cpp -lglfw -lGLEW -lGL -lGLU
+
+./tmp/program
+
+rm ./tmp/*
