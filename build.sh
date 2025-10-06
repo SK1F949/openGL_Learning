@@ -1,5 +1,5 @@
 #!/bin/bash
-g++ -o tmp/program src/*.cpp -lglfw -lGLEW -lGL -lGLU
+g++ -o build/program src/*.cpp -lglfw -lGLEW -lGL -lGLU
 
 mkdir build
 ./build/program

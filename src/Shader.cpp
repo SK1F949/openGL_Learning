@@ -15,10 +15,12 @@ static std::string ReadFile(const std::string &filepath) {
 
 
 Shader::Shader(const std::string& filepath): m_FilePath(filepath), m_RendererID(0){
-    std::string vertex_shader = ReadFile("res/shaders/vertex.glsl");
-    std::string fragment_shader = ReadFile("res/shaders/fragment.glsl");
+    ShaderProgramSource source;
 
-    m_RendererID = CreateShader(vertex_shader, fragment_shader);
+    source.FragmentSource= ReadFile("res/shaders/fragment.glsl");
+    source.VertexSource = ReadFile("res/shaders/vertex.glsl");
+
+    m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 }
 
 Shader::~Shader(){
@@ -107,15 +109,27 @@ void Shader::Unbind() const {
     glUseProgram(0);
 }
 
+void Shader::SetUniform1i(const std::string& name, int value){
+    glUniform1i(GetUniformLocation(name),value);
+}
+
+void Shader::SetUniform1f(const std::string& name, float value){
+    glUniform1f(GetUniformLocation(name),value);
+}
+
 void Shader::SetUniform4f(const std::string& name, float v0,float v1,float v2,float v3){
     glUniform4f(GetUniformLocation(name),v0,v1,v2,v3);
 }
 
-unsigned int Shader::GetUniformLocation(const std::string& name){
+void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) {
+    glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+}
+
+int Shader::GetUniformLocation(const std::string& name){
     if(m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
         return m_UniformLocationCache[name];
 
-    unsigned int location = glGetUniformLocation(m_RendererID, name.c_str());
+    int location = glGetUniformLocation(m_RendererID, name.c_str());
     if(location == -1)
         std::cout << "Warning: uniform " << name << " doesn't exist!" << std::endl;
 

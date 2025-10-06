@@ -9,4 +9,7 @@
 #include <vector>
 #include <unordered_map>
 
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
+
 #define ASSERT(x) if(!(x)) __debugbreak();
