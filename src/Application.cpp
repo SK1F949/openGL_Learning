@@ -7,15 +7,22 @@
 #include "includes.h"
 #include "Shader.h"
 #include "Filereader.h"
+#include "vendor/glm/ext/matrix_clip_space.hpp"
+#include "vendor/glm/ext/matrix_transform.hpp"
+#include "vendor/glm/ext/vector_float3.hpp"
+//#include "vendor/imgui/imgui.h"
+//#include "vendor/imgui/imgui_impl_glfw.h"
+//#include "vendor/imgui/imgui_impl_opengl3.h"
 // У МЕНЯ ЗАДАЧА СДЕЛАТЬ МАЙНКРАФТ
 
-int screen_width = 720;
-int screen_height = 720;
+int screen_width = 960;
+int screen_height = 540;
 
 float move_speed;
 
 float pos_x;
 float pos_y;
+float pos_z = 1.0f;
 
 void processInput(GLFWwindow *window)
 {
@@ -31,6 +38,11 @@ void processInput(GLFWwindow *window)
     pos_x -= move_speed;
   if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     pos_x += move_speed;
+
+  if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    pos_z -= move_speed;
+  if(glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    pos_z += move_speed;
 }
 
 int main(void) {
@@ -71,10 +83,10 @@ int main(void) {
   {
     // Vertex data
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,0.0f, // 0
-        0.5f,  -0.5f, 1.0f,0.0f,// 1
-        0.5f,  0.5f, 1.0f,1.0f, // 2
-        -0.5f, 0.5f, 0.0f,1.0f,// 3
+        100.0f, 100.0f, 0.0f,0.0f, // 0
+        200.0f, 100.0f, 1.0f,0.0f,// 1
+        200.0f, 200.0f, 1.0f,1.0f, // 2
+        100.0f, 200.0f, 0.0f,1.0f,// 3
     };
 
     unsigned int indices[] = {0, 1, 2, 2, 3, 0};
@@ -92,10 +104,16 @@ int main(void) {
 
     IndexBuffer ib(indices, 6);
 
+    glm::mat4 proj = glm::ortho(0.0f,(screen_width)+.0f, 0.0f, (screen_height)+.0f, -1.0f, 1.0f);
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100,0,0));
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200,200,0));
+
+    glm::mat4 mvp = proj * view * model;
+
     Shader shader("res/shaders/base.glsl");
     shader.Bind();
     shader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
-    shader.SetUniform4f("u_Pos", 0.0f, 0.0f, 0.0f, 1.0f);
+    shader.SetUniformMat4f("u_MVP", mvp);
 
     std::string texture_path = config.getString("test_texture_path", "res/textures/vasil.png");
     Texture texture(texture_path);
@@ -109,16 +127,27 @@ int main(void) {
 
     Renderer renderer;
 
+    //ImGui::CreateContext();
+    //ImGui_ImplGlfw_InitForOpenGL(window, true);
+    //ImGui::StyleColorsDark();
+
     float r = 0.0f;
     float increment = 0.02f;
+
+    bool show_demo_window = true;
+    bool show_another_window = false;
+    //ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     while (!glfwWindowShouldClose(window)) {
       processInput(window);
       renderer.Clear();
 
+      //ImGui_ImplOpenGL3_NewFrame();
+      //ImGui_ImplGlfw_NewFrame();
+      //ImGui::NewFrame();
+
       shader.Bind();
 
-      shader.SetUniform4f("u_Pos", pos_x, pos_y, 0.0f, 1.0f);
       renderer.Draw(va, ib, shader);
 
       if (r > 1.0f)
@@ -126,12 +155,39 @@ int main(void) {
       else if (r < 0.0f)
         increment = 0.02f;
       r += increment;
+
+      /*{
+            static float f = 0.0f;
+            static int counter = 0;
+
+            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Checkbox("Another Window", &show_another_window);
+
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                counter++;
+            ImGui::SameLine();
+            ImGui::Text("counter = %d", counter);
+
+            ImGui::End();
+        }
       
+      ImGui::Render();
+      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());*/
 
       glfwSwapBuffers(window);
       glfwPollEvents();
     }
   }
+
+  //ImGui_ImplOpenGL3_Shutdown();
+  //ImGui_ImplGlfw_Shutdown();
+  //ImGui::DestroyContext();
 
   glfwTerminate();
   return 0;
