@@ -12,7 +12,7 @@
 int screen_width = 720;
 int screen_height = 720;
 
-float move_speed = 0.05f;
+float move_speed;
 
 float pos_x;
 float pos_y;
@@ -21,15 +21,27 @@ void processInput(GLFWwindow *window)
 {
   if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
+
+  if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    pos_y += move_speed;
+  if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    pos_y -= move_speed;
+    
+  if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    pos_x -= move_speed;
+  if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    pos_x += move_speed;
 }
 
 int main(void) {
   Filereader config;
 
   if (!config.loadFromFile("data/configs/globals.cfg")) {
-        std::cerr << "Failed to load config file!" << std::endl;
-        return 1;
-    }
+      std::cerr << "Failed to load config file!" << std::endl;
+      return 1;
+  }
+
+  move_speed = config.getFloat("walk_speed", 0.01f);
 
   GLFWwindow *window;
 
@@ -67,6 +79,7 @@ int main(void) {
 
     unsigned int indices[] = {0, 1, 2, 2, 3, 0};
 
+    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     VertexArray va;
@@ -105,6 +118,7 @@ int main(void) {
 
       shader.Bind();
 
+      shader.SetUniform4f("u_Pos", pos_x, pos_y, 0.0f, 1.0f);
       renderer.Draw(va, ib, shader);
 
       if (r > 1.0f)
