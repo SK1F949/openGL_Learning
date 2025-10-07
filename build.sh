@@ -1,5 +1,6 @@
 #!/bin/bash
+mkdir -p build
+
 g++ -o build/program src/*.cpp -lglfw -lGLEW -lGL -lGLU
 
-mkdir -p build
 ./build/program

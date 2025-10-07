@@ -12,9 +12,9 @@
 #include "vendor/glm/ext/vector_float3.hpp"
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
-// #include "vendor/imgui/imgui.h"
-// #include "vendor/imgui/imgui_impl_glfw.h"
-// #include "vendor/imgui/imgui_impl_opengl3.h"
+#include "vendor/imgui/imgui.h"
+#include "vendor/imgui/imgui_impl_glfw.h"
+#include "vendor/imgui/imgui_impl_opengl3.h"
 //  У МЕНЯ ЗАДАЧА СДЕЛАТЬ МАЙНКРАФТ
 
 int screen_width = 960;
@@ -36,7 +36,8 @@ float pos_x;
 float pos_y;
 float pos_z = 1.0f;
 
-void processInput(GLFWwindow *window, float deltaTime) {
+void processInput(GLFWwindow *window, float deltaTime)
+{
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
 
@@ -60,8 +61,10 @@ void processInput(GLFWwindow *window, float deltaTime) {
     cameraPos += cameraSpeed * cameraUp;
 }
 
-void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
-  if (firstMouse) {
+void mouse_callback(GLFWwindow *window, double xpos, double ypos)
+{
+  if (firstMouse)
+  {
     lastX = xpos;
     lastY = ypos;
     firstMouse = false;
@@ -93,10 +96,12 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
   cameraFront = glm::normalize(front);
 }
 
-int main(void) {
+int main(void)
+{
   Filereader config;
 
-  if (!config.loadFromFile("data/configs/globals.cfg")) {
+  if (!config.loadFromFile("data/configs/globals.cfg"))
+  {
     std::cerr << "Failed to load config file!" << std::endl;
     return 1;
   }
@@ -113,7 +118,8 @@ int main(void) {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   window = glfwCreateWindow(screen_width, screen_height, "test", NULL, NULL);
-  if (!window) {
+  if (!window)
+  {
     glfwTerminate();
     return -1;
   }
@@ -122,7 +128,8 @@ int main(void) {
   glfwSwapInterval(1); // V-Sync
 
   glewExperimental = GL_TRUE;
-  if (glewInit() != GLEW_OK) {
+  if (glewInit() != GLEW_OK)
+  {
     std::cout << "Failed to initialize GLEW" << std::endl;
     return -1;
   }
@@ -225,10 +232,6 @@ int main(void) {
 
     Renderer renderer;
 
-    // ImGui::CreateContext();
-    // ImGui_ImplGlfw_InitForOpenGL(window, true);
-    // ImGui::StyleColorsDark();
-
     glm::vec3 translationA(200, 200, 0);
     glm::vec3 translationB(400, 200, 0);
 
@@ -244,7 +247,8 @@ int main(void) {
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
 
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window))
+    {
       float currentFrame = glfwGetTime();
       deltaTime = currentFrame - lastFrame;
       lastFrame = currentFrame;
@@ -275,44 +279,9 @@ int main(void) {
       else if (r < 0.0f)
         increment = 0.05f;
       r += increment;
-
-      /*{
-            static float f = 0.0f;
-            static int counter = 0;
-
-            ImGui::Begin("Hello, world!");                          // Create a
-      window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text.");               // Display
-      some text (you can use a format strings too) ImGui::Checkbox("Demo
-      Window", &show_demo_window);      // Edit bools storing our window
-      open/close state ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1
-      float using a slider from 0.0f to 1.0f ImGui::ColorEdit3("clear color",
-      (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons
-      return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::End();
-        }
-
-      ImGui::Render();
-      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());*/
-
-      glfwSwapBuffers(window);
-      glfwPollEvents();
     }
+
+    glfwTerminate();
+    return 0;
   }
-
-  // ImGui_ImplOpenGL3_Shutdown();
-  // ImGui_ImplGlfw_Shutdown();
-  // ImGui::DestroyContext();
-
-  glfwTerminate();
-  return 0;
 }
