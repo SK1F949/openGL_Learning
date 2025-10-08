@@ -1,36 +1,49 @@
 #!/bin/bash
 
-mkdir -p build/windows build/linux 
-rm -rf ./build/windows/* ./build/linux/*
+build_project() {
+    mkdir -p build/windows build/linux 
+    rm -rf ./build/windows/* ./build/linux/*
 
-echo "Compiling for Linux..."
-g++ -o build/linux/program src/*.cpp -lglfw -lGLEW -lGL -lGLU -ldl
+    echo "Compiling for Linux..."
+    g++ -o build/linux/program src/*.cpp -lglfw -lGLEW -lGL -lGLU -ldl
 
-if [ $? -eq 0 ]; then
-    echo "Linux compilation successful!"
-else
-    echo "Linux compilation failed!"
+    if [ $? -eq 0 ]; then
+       echo "Linux compilation successful!"
+    else
+        echo "Linux compilation failed!"
     exit 1
-fi
+    fi
 
-WIN_INCLUDE="./src/vendor/win_libs/include"
-WIN_LIB="./src/vendor/win_libs/lib"
+    WIN_INCLUDE="./src/vendor/win_libs/include"
+    WIN_LIB="./src/vendor/win_libs/lib"
 
-echo "Compiling for Windows..."
-x86_64-w64-mingw32-g++ -o build/windows/program.exe src/*.cpp \
-    -I"$WIN_INCLUDE" \
-    -L"$WIN_LIB" \
-    -lglfw3 -lglew32 -lopengl32 -lglu32 \
-    -lgdi32 -luser32 -lkernel32 -lshell32 \
-    -static -static-libgcc -static-libstdc++
+    echo "Compiling for Windows..."
+    x86_64-w64-mingw32-g++ -o build/windows/program.exe src/*.cpp \
+        -I"$WIN_INCLUDE" \
+        -L"$WIN_LIB" \
+        -lglfw3 -lglew32 -lopengl32 -lglu32 \
+        -lgdi32 -luser32 -lkernel32 -lshell32 \
+       -static -static-libgcc -static-libstdc++
 
-if [ $? -eq 0 ]; then
-    echo "Windows compilation successful!"
+    if [ $? -eq 0 ]; then
+       echo "Windows compilation successful!"
     
-    cp ./src/vendor/win_libs/bin/*.dll build/windows/
-else
-    echo "Windows compilation failed!"
-fi
+       cp ./src/vendor/win_libs/bin/*.dll build/windows/
+    else
+       echo "Windows compilation failed!"
+    fi
 
-echo "Running Linux version..."
-./build/linux/program
+    echo "Archiving source code..."
+    7z a source.zip ./*
+}
+
+if [ "$1" = "-s" ]; then
+    echo "Building project with -s flag..."
+    build_project
+    
+    echo "Running Linux version..."
+    ./build/linux/program
+else
+    build_project
+    echo "Build completed. Use './build.sh -s' to build and run immediately."
+fi
