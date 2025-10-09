@@ -4,16 +4,19 @@ build_project() {
   mkdir -p build/windows build/linux
   rm -rf ./build/windows/* ./build/linux/*
 
-  SOURCE_FILES="src/main.cpp \
+SOURCE_FILES="src/main.cpp \
+                src/classes/draw_data.cpp \
+                src/classes/game_object.cpp \
+                src/classes/object_transform.cpp \
+                src/classes/test_object.cpp \
                 src/classes/camera.cpp \
-                src/classes/cube.cpp \
                 src/classes/file_reader.cpp \
                 src/classes/index_buffer.cpp \
                 src/classes/renderer.cpp \
                 src/classes/shader.cpp \
                 src/classes/texture.cpp \
                 src/classes/vertex_array.cpp \
-                src/classes/vertex_buffer.cpp"
+                src/classes/vertex_buffer.cpp" 
 
 
   echo "Compiling for Linux..."
