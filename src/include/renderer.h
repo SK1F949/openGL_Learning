@@ -1,16 +1,20 @@
 #pragma once
 
-#include "indexBuffer.h"
+#include "index_buffer.h"
 #include "shader.h"
-#include "vertexArray.h"
+#include "vertex_array.h"
 #include "includes.h"
+#include "game_object.h"
+#include "draw_data.h"
 
 static void GLClearError();
-static bool GLLogCall(const char *function, const char *file, int line);
+static bool GLLogCall();
+
+class DrawData;
 
 class Renderer
 {
 public:
   void Clear() const;
-  void Draw(const VertexArray &va, const IndexBuffer &ib, const Shader &shader) const;
+  void Draw(DrawData &data, mat4 &mvp) const;
 };

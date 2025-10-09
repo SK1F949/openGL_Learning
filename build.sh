@@ -5,13 +5,16 @@ build_project() {
   rm -rf ./build/windows/* ./build/linux/*
 
   SOURCE_FILES="src/main.cpp \
-                src/classes/filereader.cpp \
-                src/classes/indexBuffer.cpp \
+                src/classes/camera.cpp \
+                src/classes/cube.cpp \
+                src/classes/file_reader.cpp \
+                src/classes/index_buffer.cpp \
                 src/classes/renderer.cpp \
                 src/classes/shader.cpp \
                 src/classes/texture.cpp \
-                src/classes/vertexArray.cpp \
-                src/classes/vertexBuffer.cpp" 
+                src/classes/vertex_array.cpp \
+                src/classes/vertex_buffer.cpp"
+
 
   echo "Compiling for Linux..."
   g++ -o build/linux/program $SOURCE_FILES -Isrc/include -lglfw -lGLEW -lGL -lGLU -ldl
@@ -34,7 +37,8 @@ build_project() {
     -L"$WIN_LIB" \
     -lglfw3 -lglew32 -lopengl32 -lglu32 \
     -lgdi32 -luser32 -lkernel32 -lshell32 \
-    -static -static-libgcc -static-libstdc++
+    -static -static-libgcc -static-libstdc++ \
+    -mwindows
 
   if [ $? -eq 0 ]; then
     echo "Windows compilation successful!"

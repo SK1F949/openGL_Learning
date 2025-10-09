@@ -22,7 +22,18 @@ Shader::Shader(const std::string &filepath) : m_FilePath(filepath), m_RendererID
     source.FragmentSource = ReadFile("res/shaders/fragment.glsl");
     source.VertexSource = ReadFile("res/shaders/vertex.glsl");
 
+    if (source.VertexSource.empty() || source.FragmentSource.empty())
+    {
+        std::cout << "Failed to read shader files!" << std::endl;
+        return;
+    }
+
     m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+
+    if (m_RendererID == 0)
+    {
+        std::cout << "Failed to create shader program!" << std::endl;
+    }
 }
 
 Shader::~Shader()
@@ -145,7 +156,7 @@ void Shader::SetUniform4f(const std::string &name, float v0, float v1, float v2,
     glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
 }
 
-void Shader::SetUniformMat4f(const std::string &name, const glm::mat4 &matrix)
+void Shader::SetUniformMat4f(const std::string &name, const mat4 &matrix)
 {
     glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 }
