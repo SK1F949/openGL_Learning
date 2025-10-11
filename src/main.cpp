@@ -127,7 +127,6 @@ void processInput(GLFWwindow *window, float deltaTime)
   if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
     camera->ProcessKeyboard(GLFW_KEY_C, deltaTime);
 
-  float rotationAmount = 2.5f * deltaTime;
   if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
     obj->ProcessKeyboard(GLFW_KEY_UP, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
@@ -188,7 +187,7 @@ int main(void)
 
   // setting camera
   camera->SetMovementSpeed(config.getFloat("walk_speed", 2.5f));
-  obj->SetMovementSpeed(10);
+  obj->SetMovementSpeed(25);
 
   // setting OpenGL
   glEnable(GL_BLEND);
@@ -254,7 +253,7 @@ int main(void)
 
     // rendering
     {
-      obj->GetTransform().SetPosition(vec3(0.0f, 0.0f, -3.0f));
+      obj->GetTransform().SetPosition(vec3(0, 0, -3));
 
       mat4 model = obj->GetTransform().GetModelMatrix();
       mat4 mvp = proj * view * model;

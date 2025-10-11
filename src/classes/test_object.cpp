@@ -39,16 +39,16 @@ void TestObject::ProcessKeyboard(int direction, float deltaTime)
     switch (direction)
     {
     case GLFW_KEY_UP:
-        m_Transform.SetRotation(m_Front * velocity);
+        m_Transform.Rotate(-m_Front * velocity);
         break;
     case GLFW_KEY_DOWN:
-        m_Transform.SetRotation(-m_Front * velocity);
+        m_Transform.Rotate(m_Front * velocity);
         break;
     case GLFW_KEY_LEFT:
-        m_Transform.SetRotation(-normalize(cross(m_Front, m_Up)) * velocity);
+        m_Transform.Rotate(normalize(cross(m_Front, m_Up)) * velocity);
         break;
     case GLFW_KEY_RIGHT:
-        m_Transform.SetRotation(normalize(cross(m_Front, m_Up)) * velocity);
+        m_Transform.Rotate(-normalize(cross(m_Front, m_Up)) * velocity);
     }
 
     updateRotateVectors();
